@@ -7,8 +7,8 @@ COPY ./nakama/build /nakama/data/modules
 EXPOSE 7350 7349 7351
 
 # Start Nakama using environment variables (Render injects them)
-CMD ["/bin/sh", "-ecx", "\
-    echo \"Using DATABASE_URL=$DATABASE_URL\" && \
+CMD [CMD /bin/sh -c "\
+    echo DB=$DATABASE_URL && \
     /nakama/nakama migrate up --database.address \"$DATABASE_URL\" && \
     exec /nakama/nakama \
     --name nakama1 \
