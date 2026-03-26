@@ -27,10 +27,50 @@ function rpcCreateMatch(context, logger, nk, payload) {
     return JSON.stringify({ matchId: matchId });
 }
 function rpcJoinMatch(context, logger, nk, payload) {
-    return JSON.stringify({});
+    if (!payload) {
+        throw new Error("Payload required");
+    }
+    var data;
+    try {
+        data = JSON.parse(payload);
+    }
+    catch (e) {
+        throw new Error("Invalid payload JSON");
+    }
+    var matchId = data.matchId;
+    if (!matchId) {
+        throw new Error("matchId is required");
+    }
+    return JSON.stringify({
+        matchId: matchId,
+        message: "Use socket.joinMatch(matchId) to actually join"
+    });
 }
 function rpcAutoMatch(context, logger, nk, payload) {
-    return JSON.stringify({});
+    var mode = "classic";
+    if (payload) {
+        try {
+            var parsed = JSON.parse(payload);
+            if (parsed.mode === "timed") {
+                mode = "timed";
+            }
+        }
+        catch (e) {
+            logger.error("Invalid payload in auto_match");
+        }
+    }
+    var matches = nk.matchList(10, true, "label.mode:".concat(mode), 0, 1, "");
+    if (matches.length > 0) {
+        return JSON.stringify({
+            matchId: matches[0].matchId,
+            created: false
+        });
+    }
+    var matchId = nk.matchCreate("tic_tac_toe", { mode: mode });
+    return JSON.stringify({
+        matchId: matchId,
+        created: true
+    });
 }
 function rpcListMatches(context, logger, nk, payload) {
     var limit = 10;
