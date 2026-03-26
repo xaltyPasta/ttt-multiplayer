@@ -4,10 +4,11 @@ COPY ./nakama/build /nakama/data/modules
 
 EXPOSE 7350 7349 7351
 
-ENTRYPOINT ["/bin/sh", "-c"]
+# 🔥 FULL OVERRIDE (this is key)
+ENTRYPOINT []
 
-CMD "\
-    echo 'STARTING WITH DB='$DATABASE_URL && \
+CMD ["/bin/sh", "-c", "\
+    echo STARTING_WITH_DB=$DATABASE_URL && \
     /nakama/nakama migrate up --database.address \"$DATABASE_URL\" && \
     exec /nakama/nakama \
     --name nakama1 \
@@ -19,4 +20,4 @@ CMD "\
     --session.encryption_key=\"$ENC_KEY\" \
     --session.refresh_encryption_key=\"$REFRESH_KEY\" \
     --console.port 7351 \
-    "
+    "]
