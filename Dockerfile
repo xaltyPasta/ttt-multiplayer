@@ -1,14 +1,13 @@
 FROM heroiclabs/nakama:3.21.1
 
-# Copy your modules
 COPY ./nakama/build /nakama/data/modules
 
-# Expose ports
 EXPOSE 7350 7349 7351
 
-# Proper shell CMD (NO brackets)
-CMD /bin/sh -c "\
-    echo 'Using DATABASE_URL='$DATABASE_URL && \
+ENTRYPOINT ["/bin/sh", "-c"]
+
+CMD "\
+    echo 'STARTING WITH DB='$DATABASE_URL && \
     /nakama/nakama migrate up --database.address \"$DATABASE_URL\" && \
     exec /nakama/nakama \
     --name nakama1 \
