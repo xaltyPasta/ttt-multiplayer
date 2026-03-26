@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "none",
+    "outFile": "build/index.js",
+    "removeComments": true,
+    "noEmitOnError": true
+  },
+  "include": ["src/main.ts", "src/global.d.ts"]
+}
